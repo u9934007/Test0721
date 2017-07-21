@@ -41,9 +41,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         bottonView.layer.shadowRadius = 10
         bottonView.layer.shadowOffset = CGSize(width: 0, height: 0)
         bottonView.layer.shadowColor = UIColor.asiBlack25.cgColor
-        
 
-        
     }
 
 
@@ -58,7 +56,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
         picker.dismiss(animated: true, completion: nil)
+    
     }
     
     
@@ -67,62 +67,48 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             picker.dismiss(animated: true, completion: {
                 
-                 //這裡放插入圖片
+                self.scrollView.zoomScale = 1
                 self.imageView.image = image
-                
                 self.imageView.contentMode = UIViewContentMode.scaleAspectFit
-                self.imageView.frame = self.scrollView.bounds
-                
-                if self.imageView.frame.size.height > self.blackView.frame.size.height {
-                    
-                    self.imageView.frame.size.height = self.blackView.frame.height
-                    self.imageView.frame.size.width =  self.imageView.frame.size.width * (self.blackView.frame.size.height/self.imageView.frame.size.height)
-                
-                }
-                
-                if self.imageView.frame.size.width > self.blackView.frame.size.width {
-                    
-                    self.imageView.frame.size.width = self.blackView.frame.width
-                    self.imageView.frame.size.height =  self.imageView.frame.size.height * (self.blackView.frame.size.width/self.imageView.frame.size.width)
-                    
-                }
-                
-                
+                self.imageView.frame = self.scrollView.frame
                 self.initImageInstance()
                 
-                
             })
+        
         }
     }
     
     func initImageInstance(){
-
-        self.scrollView.frame.size.width = self.imageView.frame.size.width
-        self.scrollView.frame.size.height = self.imageView.frame.size.height
+     
+        self.scrollView.frame.size.width = self.imageView.bounds.size.width
+        self.scrollView.frame.size.height = self.imageView.bounds.size.height
         self.scrollView.backgroundColor = UIColor.black
+        
         scrollView.delegate = self
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 10.0
+        self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setZoomScale()
     
-        self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
     }
     
-    func setZoomScale() {
+    func setZoomScale(){
+        
         let imageViewSize = imageView.bounds.size
         let scrollViewSize = scrollView.bounds.size
         let widthScale = scrollViewSize.width / imageViewSize.width
         let heightScale = scrollViewSize.height / imageViewSize.height
-        
-        let minZoomScale = min(widthScale, heightScale)
+        let minZoomScale = max(widthScale, heightScale)
         scrollView.minimumZoomScale = minZoomScale
         scrollView.zoomScale = minZoomScale
+    
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        
         return imageView
-    }
     
-
+    }
  
 }
 
