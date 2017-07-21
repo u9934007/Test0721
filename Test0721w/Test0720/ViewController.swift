@@ -42,8 +42,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         bottonView.layer.shadowOffset = CGSize(width: 0, height: 0)
         bottonView.layer.shadowColor = UIColor.asiBlack25.cgColor
         
+
         
-    
     }
 
 
@@ -72,6 +72,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
                 self.imageView.contentMode = UIViewContentMode.scaleAspectFit
                 self.imageView.frame = self.scrollView.bounds
+                
+                if self.imageView.frame.size.height > self.blackView.frame.size.height {
+                    
+                    self.imageView.frame.size.height = self.blackView.frame.height
+                    self.imageView.frame.size.width =  self.imageView.frame.size.width * (self.blackView.frame.size.height/self.imageView.frame.size.height)
+                
+                }
+                
+                if self.imageView.frame.size.width > self.blackView.frame.size.width {
+                    
+                    self.imageView.frame.size.width = self.blackView.frame.width
+                    self.imageView.frame.size.height =  self.imageView.frame.size.height * (self.blackView.frame.size.width/self.imageView.frame.size.width)
+                    
+                }
+                
+                
                 self.initImageInstance()
                 
                 
@@ -81,38 +97,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func initImageInstance(){
 
-        self.scrollView.frame.size.width = 100
-        self.scrollView.frame.size.height = 200
+        self.scrollView.frame.size.width = self.imageView.frame.size.width
+        self.scrollView.frame.size.height = self.imageView.frame.size.height
         self.scrollView.backgroundColor = UIColor.black
-        self.scrollView.contentSize = imageView.bounds.size
-        self.scrollView.contentMode = UIViewContentMode.scaleAspectFit
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 5.0
-        
-        self.scrollView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
-        self.scrollView.delegate = self as? UIScrollViewDelegate
-        
-    }
+        scrollView.delegate = self
+        setZoomScale()
     
-    func setupGestureRecognizer() {
-        let singleTap = UITapGestureRecognizer(target: self, action: Selector(("navigationToggle:")))
-        singleTap.numberOfTapsRequired = 1
-        scrollView.addGestureRecognizer(singleTap)
+        self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        let doubleTap = UITapGestureRecognizer(target: self, action: Selector(("handleDoubleTap:")))
-        doubleTap.numberOfTapsRequired = 2
-        scrollView.addGestureRecognizer(doubleTap)
-        
-        singleTap.require(toFail: doubleTap)
-    }
-    
-    // 點擊兩下後 縮放圖片
-    func handleDoubleTap(recognizer: UITapGestureRecognizer) {
-        if (scrollView.zoomScale > scrollView.minimumZoomScale) {
-            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
-        } else {
-            scrollView.setZoomScale(scrollView.maximumZoomScale, animated: true)
-        }
     }
     
     func setZoomScale() {
@@ -129,6 +121,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
+    
 
  
 }
